@@ -9,33 +9,27 @@
 
 'use strict';
 
-class ButtonSwitch {
-  constructor(domNode) {
-    this.switchNode = domNode;
-    this.switchNode.addEventListener('click', () => this.toggleStatus());
+class ButtonSwitch extends HTMLElement {
+  #domNode;
+
+  constructor() {
+    super();
+    this.#domNode = this.querySelector('button');
+    this.#domNode.addEventListener('click', () => this.toggleStatus());
 
     // Set background color for the SVG container Rect
-    var color = getComputedStyle(this.switchNode).getPropertyValue(
-      'background-color'
-    );
-    var containerNode = this.switchNode.querySelector('rect.container');
+    const color = getComputedStyle(this).getPropertyValue('background-color');
+    const containerNode = this.querySelector('rect.container');
     containerNode.setAttribute('fill', color);
   }
 
   // Switch state of a switch
   toggleStatus() {
-    const currentState =
-      this.switchNode.getAttribute('aria-checked') === 'true';
+    const currentState = this.#domNode.getAttribute('aria-checked') === 'true';
     const newState = String(!currentState);
 
-    this.switchNode.setAttribute('aria-checked', newState);
+    this.#domNode.setAttribute('aria-checked', newState);
   }
 }
 
-// Initialize switches
-window.addEventListener('load', function () {
-  // Initialize the Switch component on all matching DOM nodes
-  Array.from(document.querySelectorAll('button[role^=switch]')).forEach(
-    (element) => new ButtonSwitch(element)
-  );
-});
+window.customElements.define('button-switch', ButtonSwitch);
